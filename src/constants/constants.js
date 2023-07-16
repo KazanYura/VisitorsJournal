@@ -9,7 +9,7 @@ export const DIVISORS_COLORS = [
 export const DEFAULT_FONT_STYLE = {fontSize: 20};
 export const BIGGER_FONT_STYLE = {fontSize: 22};
 
-export const toDisplayTime = time => {
+export const toDisplayTime = (time, noTimeProvided = false) => {
   if (time) {
     const hours =
       time.getHours() < 10 ? '0' + time.getHours() : time.getHours();
@@ -17,7 +17,7 @@ export const toDisplayTime = time => {
       time.getMinutes() < 10 ? '0' + time.getMinutes() : time.getMinutes();
     return hours + ':' + minutes;
   } else {
-    return '';
+    return noTimeProvided ? 'N/A' : '';
   }
 };
 

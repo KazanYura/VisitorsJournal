@@ -10,10 +10,15 @@ import {
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {VisitorContext} from '../context/VisitorContext';
 export const VisitorContainer = ({visitor}) => {
+  const generateRandomNumber = () => {
+    return Math.floor(Math.random() * DIVISORS_COLORS.length);
+  };
   const {deleteVisitor, toggleOverlayForEdit} = useContext(VisitorContext);
   return (
     <TouchableHighlight
-      onPress={() => {}}
+      onPress={() => {
+        toggleOverlayForEdit(visitor);
+      }}
       underlayColor="white"
       style={styles.main_action_container}>
       <View style={styles.inner_container}>
@@ -22,19 +27,21 @@ export const VisitorContainer = ({visitor}) => {
             From: {toDisplayTime(visitor.enterTime)}
           </Text>
           <Text style={styles.general_font}>
-            To: {toDisplayTime(visitor.leaveTime)}
+            To: {toDisplayTime(visitor.leaveTime, true)}
           </Text>
         </View>
         <Divider
           orientation="vertical"
           width={5}
-          color={DIVISORS_COLORS[visitor.id % DIVISORS_COLORS.length]}
+          color={DIVISORS_COLORS[generateRandomNumber()]}
         />
         <View style={styles.guest_info_container}>
           <Text style={styles.bigger_font}>Guest Name: {visitor.name}</Text>
-          <Text style={styles.space_save}>Host: {visitor.visitToName}</Text>
+          <Text style={styles.space_save}>
+            Responsible Person: {visitor.visitToName}
+          </Text>
           <Text style={styles.general_font}>
-            Visit reason: {visitor.visitReason}
+            Reason for visit: {visitor.visitReason}
           </Text>
         </View>
         <View style={styles.action_button_container}>
@@ -68,13 +75,13 @@ const styles = StyleSheet.create({
   general_font: DEFAULT_FONT_STYLE,
   space_save: {fontSize: 20, width: '75%', marginRight: '10%'},
   bigger_font: BIGGER_FONT_STYLE,
-  guest_info_container: {marginLeft: 20, width: '70%'},
+  guest_info_container: {marginLeft: 20, width: '65%'},
   guest_additional_info_container: {
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    width: '75%',
+    width: '60%',
   },
   action_button_container: {display: 'flex', flexDirection: 'row'},
-  icon: {marginLeft: 10, marginRight: 30},
+  icon: {marginLeft: 30, marginRight: 50},
 });

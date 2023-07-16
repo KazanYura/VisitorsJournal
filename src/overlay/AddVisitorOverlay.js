@@ -11,6 +11,7 @@ import {VisitorContext} from '../context/VisitorContext';
 import Entypo from 'react-native-vector-icons/Entypo';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import {join, toDisplayTime} from '../constants/constants';
+import {SelectList} from 'react-native-dropdown-select-list';
 
 export const AddVisitorOverlay = () => {
   const {
@@ -20,10 +21,10 @@ export const AddVisitorOverlay = () => {
     visitorToEdit,
     editVisitor,
   } = useContext(VisitorContext);
+  const [visitorReason, setVisitorReason] = useState(null);
   const [visitorName, setVisitorName] = useState(null);
   const [visitDate, setVisitDate] = useState(Date.now());
   const [visitorHostName, setVisitorHostName] = useState(null);
-  const [visitReason, setVisitReason] = useState(null);
   const [
     isVisitorEnterTimeDatePickerVisible,
     setVisitorEnterTimeDatePickerVisible,
@@ -44,7 +45,6 @@ export const AddVisitorOverlay = () => {
     if (!visitorToEdit) {
       setVisitorName(null);
       setVisitorHostName(null);
-      setVisitReason(null);
       setVisitorEnterTime(null);
       setVisitDate(Date.now());
       setVisitorLeaveTime(null);
@@ -52,7 +52,6 @@ export const AddVisitorOverlay = () => {
     } else {
       setVisitorName(visitorToEdit.name);
       setVisitorHostName(visitorToEdit.visitToName);
-      setVisitReason(visitorToEdit.visitReason);
       setVisitorEnterTime(visitorToEdit.enterTime);
       setVisitDate(visitorToEdit.visitDate);
       setVisitorLeaveTime(visitorToEdit.leaveTime);
@@ -61,11 +60,10 @@ export const AddVisitorOverlay = () => {
 
   const submitForm = () => {
     const vError = [
-      !visitorName && 'Visitor name',
-      !visitReason && 'Visit reason',
+      !visitorHostName && 'First name and Last name of responsible person',
       !visitorEnterTime && 'Enter time',
-      !visitorLeaveTime && 'Leave time',
-      !visitorHostName && 'Host name',
+      !Object.keys(visitorReason).length === 0 && 'Reason for visit',
+      !visitorName && 'Visitor name',
       !visitDate && 'Visit Date',
       visitorEnterTime &&
         visitorLeaveTime &&
@@ -75,10 +73,10 @@ export const AddVisitorOverlay = () => {
     if (vError.filter(v => v).length === 0) {
       const visitor = {
         name: visitorName,
-        visitReason: visitReason,
         enterTime: visitorEnterTime,
         leaveTime: visitorLeaveTime,
         visitToName: visitorHostName,
+        visitReason: visitorReason,
         visitDate: visitDate,
       };
       !visitorToEdit && addVisitor(visitor);
@@ -100,6 +98,12 @@ export const AddVisitorOverlay = () => {
     }
   };
 
+  const data = [
+    {key: 'Масаж', value: 'Масаж'},
+    {key: 'Гості', value: 'Гості'},
+    {key: 'Підрядники', value: 'Підрядники'},
+  ];
+
   return (
     <Overlay
       isVisible={addVisitorOverlayVisible}
@@ -118,6 +122,24 @@ export const AddVisitorOverlay = () => {
       </View>
       <View style={styles.main_container}>
         <View style={styles.input_container}>
+          <SelectList
+            setSelected={val => setVisitorReason(val)}
+            data={data}
+            save="value"
+            placeholder="Reason for visit"
+            search={false}
+            defaultOption={
+              visitorToEdit
+                ? {
+                    key: visitorToEdit.visitorReason,
+                    value: visitorToEdit.visitorReason,
+                  }
+                : {}
+            }
+            inputStyles={styles.select_input}
+          />
+        </View>
+        <View style={styles.input_container}>
           <TextInput
             style={styles.input}
             placeholder="Visitor Name"
@@ -129,19 +151,10 @@ export const AddVisitorOverlay = () => {
         <View style={styles.input_container}>
           <TextInput
             style={styles.input}
-            placeholder="Host Name"
+            placeholder="First name and Last name of responsible person"
             keyboardType="web-search"
             value={visitorHostName}
             onChangeText={setVisitorHostName}
-          />
-        </View>
-        <View style={styles.input_container}>
-          <TextInput
-            style={styles.input}
-            placeholder="Visit Reason"
-            keyboardType="web-search"
-            value={visitReason}
-            onChangeText={setVisitReason}
           />
         </View>
         <TouchableHighlight
@@ -244,7 +257,7 @@ export const AddVisitorOverlay = () => {
   );
 };
 const styles = StyleSheet.create({
-  main_container: {width: '80%'},
+  main_container: {width: '60%', borderRadius: 70},
   overlay_header: {
     display: 'flex',
     flexDirection: 'row',
@@ -261,8 +274,8 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
   },
-  error_message_container: {marginLeft: 50, marginBottom: 50, width: '70%'},
-  error_message: {color: '#C44536', fontSize: 22},
+  error_message_container: {marginLeft: 50, marginBottom: 10, width: '70%'},
+  error_message: {color: '#C44536', fontSize: 14},
   overlay_header_text: {fontSize: 26, fontWeight: 800, height: 45},
   input_container: {
     padding: 5,
@@ -271,7 +284,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#d9dbda',
     borderRadius: 15,
     alignItems: 'center',
-    marginBottom: 50,
+    marginBottom: 20,
     marginLeft: 50,
   },
   input_half_container: {
@@ -281,19 +294,25 @@ const styles = StyleSheet.create({
     backgroundColor: '#d9dbda',
     borderRadius: 15,
     alignItems: 'center',
-    marginBottom: 50,
+    marginBottom: 20,
+  },
+  select_input: {
+    fontSize: 12,
+    height: 20,
+    width: '77%',
+    color: 'black',
   },
   input: {
-    fontSize: 20,
+    fontSize: 12,
     marginLeft: 10,
-    height: 50,
+    height: 35,
     width: '80%',
     color: 'black',
   },
   date_input: {
-    fontSize: 20,
+    fontSize: 12,
     marginLeft: 10,
-    height: 50,
+    height: 35,
     width: '80%',
     color: 'black',
   },

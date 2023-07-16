@@ -37,7 +37,10 @@ export const VisitorList = () => {
   }, [visitorsByDate, dateRange]);
 
   return dataExists ? (
-    <ScrollView style={styles.scroll_view_container}>
+    <ScrollView 
+      style={styles.scroll_view_container}
+      persistentScrollbar={true}
+    >
       {dateRange.map(
         date =>
           visitorsByDate.get(date) &&
@@ -45,16 +48,15 @@ export const VisitorList = () => {
             .get(date)
             .filter(visitor => visitor.name.includes(searchPhrase)).length >
             0 && (
-            <View id={visitorsByDate.get(date).id}>
+            <View id={visitorsByDate.get(date).id} key = {visitorsByDate.get(date).id}>
               <View style={styles.inner_container}>
                 <Text style={styles.date_font}>{date}</Text>
               </View>
               {visitorsByDate
                 .get(date)
-                .filter(visitor => visitor.name.includes(searchPhrase))
                 .sort((a, b) => a.enterTime - b.enterTime)
                 .map(visitor => (
-                  <VisitorContainer id={visitor.id} visitor={visitor} />
+                  <VisitorContainer id={visitor.id} visitor={visitor} key = {visitor.id} />
                 ))}
             </View>
           ),
@@ -80,7 +82,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    height: 400,
+    height: "90%",
   },
   missing_items_image: {height: 150, width: 150, marginBottom: 20},
   no_data_message: {fontSize: 22},

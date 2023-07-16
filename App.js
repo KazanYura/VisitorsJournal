@@ -3,14 +3,15 @@ import {
   SafeAreaView,
   TouchableWithoutFeedback,
   Keyboard,
-  View,
+  View
 } from 'react-native';
 import {CustomHeader} from './src/header/CustomHeader';
 import {VisitorContextValue} from './src/context/VisitorContext';
 import {VisitorList} from './src/visitorlist/VisitorList';
 import {AddVisitorOverlay} from './src/overlay/AddVisitorOverlay';
 import {CustomCalendar} from './src/calendar/CustomCalendar';
-import {SearchBar} from './src/header/SearchBar';
+import { AddButton } from './src/overlay/AddButton';
+
 function App() {
   return (
     <SafeAreaView>
@@ -18,12 +19,12 @@ function App() {
         <CustomHeader />
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
           <View>
-            <SearchBar />
             <CustomCalendar />
             <VisitorList />
           </View>
         </TouchableWithoutFeedback>
         <AddVisitorOverlay />
+        <AddButton/>
       </VisitorContextValue>
     </SafeAreaView>
   );
